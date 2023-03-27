@@ -4,7 +4,13 @@ const api = {
 }
 
 const searchbox = document.querySelector('.search-box');
+const locationButton = document.querySelector('.location-button');
+
 searchbox.addEventListener('keypress', setQuery);
+locationButton.addEventListener('click', () => {
+  searchbox.value='Current Location';
+  getResults('Current Location');
+});
 document.onload = getResults('Chicago');
 
 function setQuery(evt) {
@@ -14,10 +20,20 @@ function setQuery(evt) {
 }
 
 function getResults (query) {
-  fetch(`${api.base}weather?q=${query}&units=imperial&APPID=${api.key}`)
-    .then(weather => {
-      return weather.json();
-    }).then(displayResults);
+  if(query == 'Current Location') {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      fetch(`${api.base}weather?lat=${position.coords.latitude}&lon=${position.coords.longitude}&units=imperial&APPID=${api.key}`)
+        .then(weather => {
+          return weather.json();
+        }).then(displayResults);
+    });
+  }
+  else {
+    fetch(`${api.base}weather?q=${query}&units=imperial&APPID=${api.key}`)
+      .then(weather => {
+        return weather.json();
+      }).then(displayResults);
+  }
 }
 
 function displayResults (weather) {

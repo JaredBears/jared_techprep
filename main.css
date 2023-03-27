@@ -11,6 +11,11 @@ body {
   background-position: top center;
 }
 
+.location-button {
+  cursor: pointer;
+  margin-right: 10px;
+}
+
 .app-wrap {
   display: flex;
   flex-direction: column;
