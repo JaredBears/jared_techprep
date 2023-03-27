@@ -42,6 +42,8 @@ function displayResults (weather) {
   let temp = document.querySelector('.current .temp');
   let weather_el = document.querySelector('.current .weather');
   let hilow = document.querySelector('.hi-low');
+  let humidity = document.querySelector('.humidity');
+  let feelsLike = document.querySelector('.feels-like');
 
   if (weather.cod != 200) {
     city.innerText = '';
@@ -49,6 +51,8 @@ function displayResults (weather) {
     temp.innerHTML = '';
     weather_el.innerText = '';
     hilow.innerText = '';
+    humidity = '';
+    feelsLike = '';
     alert("ERROR " + String(weather.cod) + ": " + weather.message);
     return;
   }
@@ -56,9 +60,12 @@ function displayResults (weather) {
   let now = new Date();
   city.innerText = `${weather.name}, ${weather.sys.country}`;
   date.innerText = dateBuilder(now);
-  temp.innerHTML = `${Math.round(weather.main.temp)}<span>°F</span>`;
+  temp.innerHTML = `${Math.round(weather.main.temp)}°F / <span>(${Math.round(toCelsius(weather.main.temp))}°C)</span> `;
   weather_el.innerText = weather.weather[0].main;
-  hilow.innerText = `${Math.round(weather.main.temp_min)}°F / ${Math.round(weather.main.temp_max)}°F`;
+  hilow.innerText = `${Math.round(weather.main.temp_min)}°F / ${Math.round(weather.main.temp_max)}°F \n \
+  (${Math.round(toCelsius(weather.main.temp_min))}°C / ${Math.round(toCelsius(weather.main.temp_max))}°C)`;
+  humidity.innerText = `Humidity: ${weather.main.humidity}%`;
+  feelsLike.innerText = `Feels Like: ${Math.round(weather.main.feels_like)}°F / ${Math.round(toCelsius(weather.main.feels_like))}°C`;
 }
 
 function dateBuilder (d) {
@@ -71,4 +78,8 @@ function dateBuilder (d) {
   let year = d.getFullYear();
 
   return `${day} ${date} ${month} ${year}`;
+}
+
+function toCelsius(fahrenheit) {
+  return (5/9) * (fahrenheit-32);
 }
