@@ -38,19 +38,26 @@ function getResults (query) {
 
 function displayResults (weather) {
   let city = document.querySelector('.location .city');
-  city.innerText = `${weather.name}, ${weather.sys.country}`;
+  let date = document.querySelector('.location .date');
+  let temp = document.querySelector('.current .temp');
+  let weather_el = document.querySelector('.current .weather');
+  let hilow = document.querySelector('.hi-low');
+
+  if (weather.cod != 200) {
+    city.innerText = '';
+    date.innerText = '';
+    temp.innerHTML = '';
+    weather_el.innerText = '';
+    hilow.innerText = '';
+    alert("ERROR " + String(weather.cod) + ": " + weather.message);
+    return;
+  }
 
   let now = new Date();
-  let date = document.querySelector('.location .date');
+  city.innerText = `${weather.name}, ${weather.sys.country}`;
   date.innerText = dateBuilder(now);
-
-  let temp = document.querySelector('.current .temp');
   temp.innerHTML = `${Math.round(weather.main.temp)}<span>°F</span>`;
-
-  let weather_el = document.querySelector('.current .weather');
   weather_el.innerText = weather.weather[0].main;
-
-  let hilow = document.querySelector('.hi-low');
   hilow.innerText = `${Math.round(weather.main.temp_min)}°F / ${Math.round(weather.main.temp_max)}°F`;
 }
 
