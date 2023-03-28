@@ -14,6 +14,12 @@
       <img src="img/location-icon.png" alt="location icon" class="location-button" height=25 width=25 />
     </header>
     <main>
+      <div class="selections">
+        <input type="radio" id="city" name="city-zip" value="city" checked><label for="city">City</label>
+        <input type="radio" id="zip" name="city-zip" value="zip"><label for="zip">Zip</label>
+        <input type="radio" id="celsius" name="temp-units" value="celsius"><label for="celsius">Celsius</label>
+        <input type="radio" id="fahrenheit" name="temp-units" value="fahrenheit" checked><label for="fahrenheit">Fahrenheit</label>
+      </div>
       <section class="location">
         <div class="city"></div>
         <div class="date"></div>
