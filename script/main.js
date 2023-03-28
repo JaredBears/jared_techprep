@@ -14,6 +14,8 @@ let temp = 0;
 let hiLo = [];
 let feelsLike = 0;
 
+let timeOfLastUpdate = 0;
+
 let cityBox = document.querySelector('.location .city');
 let dateBox = document.querySelector('.location .date');
 let tempBox = document.querySelector('.current .temp');
@@ -61,6 +63,13 @@ function setQuery(evt) {
 }
 
 function getResults (query) {
+  let currTime = new Date().getTime();
+  let delta = currTime - timeOfLastUpdate;
+  if(delta < 5000) {
+    alert (`Please wait ${Math.floor((5000 - delta)/1000)} seconds before updating again.`);
+    return;
+  }
+  timeOfLastUpdate = currTime;
   if(query == 'Current Location') {
     navigator.geolocation.getCurrentPosition(function(position) {
       fetch(`${api.base}weather?lat=${position.coords.latitude}&lon=${position.coords.longitude}&units=${units}&APPID=${api.key}`)
@@ -70,12 +79,20 @@ function getResults (query) {
     });
   }
   else if (city) {
+    if(query.length < 3) {
+      alert("Please enter a city name with at least 3 characters.");
+      return;
+    }
     fetch(`${api.base}weather?q=${query}&units=${units}&APPID=${api.key}`)
       .then(weather => {
         return weather.json();
       }).then(displayResults);
   }
   else {
+    if (query.length != 5 || !/^\d+$/.test(query)) {
+      alert("Please enter a valid 5-digit zip code.");
+      return;
+    }
     fetch(`${api.base}weather?zip=${query}&units=${units}&APPID=${api.key}`)
       .then(weather => {
         return weather.json();
@@ -87,7 +104,7 @@ function displayResults (weather) {
   if (weather.cod != 200) {
     cityBox.innerText = '';
     dateBox.innerText = '';
-    temp.innerHTML = '';
+    tempBox.innerHTML = '';
     weatherBox.innerText = '';
     hiLoBox.innerText = '';
     humidityBox.innerText = '';
