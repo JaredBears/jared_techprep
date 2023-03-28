@@ -5,26 +5,32 @@ const api = {
 
 const searchbox = document.querySelector('.search-box');
 const locationButton = document.querySelector('.location-button');
+const tempRadio = document.querySelectorAll('input[type=radio][name="temp-units"]');
+const locationRadio = document.querySelectorAll('input[type=radio][name="city-zip"]');
+const cityBox = document.querySelector('.location .city');
+const dateBox = document.querySelector('.location .date');
+const tempBox = document.querySelector('.current .temp');
+const weatherBox = document.querySelector('.current .weather');
+const hiLoBox = document.querySelector('.hi-low');
+const humidityBox = document.querySelector('.humidity');
+const feelsLikeBox = document.querySelector('.feels-like');
 
 let city = true;
-
 let units = 'imperial';
-
 let temp = 0;
 let hiLo = [];
 let feelsLike = 0;
-
 let timeOfLastUpdate = 0;
 
-let cityBox = document.querySelector('.location .city');
-let dateBox = document.querySelector('.location .date');
-let tempBox = document.querySelector('.current .temp');
-let weatherBox = document.querySelector('.current .weather');
-let hiLoBox = document.querySelector('.hi-low');
-let humidityBox = document.querySelector('.humidity');
-let feelsLikeBox = document.querySelector('.feels-like');
 
-const tempRadio = document.querySelectorAll('input[type=radio][name="temp-units"]');
+document.onload = getResults('Chicago');
+
+searchbox.addEventListener('keypress', setQuery);
+locationButton.addEventListener('click', () => {
+  searchbox.value='Current Location';
+  getResults('Current Location');
+});
+
 tempRadio.forEach((radio) => {
   radio.addEventListener('change', (event) => {
     if(radio.value == 'celsius'){
@@ -35,8 +41,7 @@ tempRadio.forEach((radio) => {
   });
 });
 
-const locationRation = document.querySelectorAll('input[type=radio][name="city-zip"]');
-locationRation.forEach((radio) => {
+locationRadio.forEach((radio) => {
   radio.addEventListener('change', (event) => {
     searchbox.value = '';
     if(radio.value == 'city'){
@@ -49,13 +54,6 @@ locationRation.forEach((radio) => {
   });
 });
 
-searchbox.addEventListener('keypress', setQuery);
-locationButton.addEventListener('click', () => {
-  searchbox.value='Current Location';
-  getResults('Current Location');
-});
-document.onload = getResults('Chicago');
-
 function setQuery(evt) {
   if (evt.keyCode == 13) {
     getResults(searchbox.value);
@@ -66,7 +64,7 @@ function getResults (query) {
   let currTime = new Date().getTime();
   let delta = currTime - timeOfLastUpdate;
   if(delta < 5000) {
-    alert (`Please wait ${Math.floor((5000 - delta)/1000)} seconds before updating again.`);
+    alert (`Please wait ${Math.ceil((5000 - delta)/1000)} seconds before updating again.`);
     return;
   }
   timeOfLastUpdate = currTime;
